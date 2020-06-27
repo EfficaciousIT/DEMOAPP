@@ -58,6 +58,8 @@ public class DailyDiaryAdapter extends RecyclerView.Adapter<DailyDiaryAdapter.Di
     String vchtype,intMy_id,int_Approval;
     private ProgressDialog progress;
     public ArrayList<StandardDetail> orig;
+
+    DiaryListHolder holder1;
     public DailyDiaryAdapter(Activity activity,  ArrayList<StandardDetail> dailyDiaryHomeWorks,String pagename,String usertype) {
         this.activity = activity;
         this.itemsArrayList = dailyDiaryHomeWorks;

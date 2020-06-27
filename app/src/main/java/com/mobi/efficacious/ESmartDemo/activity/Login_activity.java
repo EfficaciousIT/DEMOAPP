@@ -83,9 +83,6 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
 
     private static FirebaseAnalytics firebaseAnalytics;
 
-    private FirebaseRemoteConfig mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-    private HashMap<String, Object> firebaseDefaultMap;
-    public static final String VERSION_CODE_KEY = "latest_app_version";
     private static final String TAG = "MainActivity";
 
     @Override
@@ -121,43 +118,22 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
         }
         mydb.query("Create table if not exists NoticeBoard(ID INTEGER PRIMARY KEY AUTOINCREMENT,Subject varchar,Notice varchar,IssueDate varchar,LastDate varchar)");
 
-                firebaseDefaultMap = new HashMap<>();
-        //Setting the Default Map Value with the current version code
-        firebaseDefaultMap.put(VERSION_CODE_KEY, getCurrentVersionCode());
-
-        //Setting that default Map to Firebase Remote Config
-        mFirebaseRemoteConfig.setDefaults(firebaseDefaultMap);
-
-        //Setting Developer Mode enabled to fast retrieve the values
-        mFirebaseRemoteConfig.setConfigSettings(
-                new FirebaseRemoteConfigSettings.Builder().setDeveloperModeEnabled(BuildConfig.DEBUG)
-                        .build());
-
-//        long cacheExpiration = 3600;
-//        //onDevelopment make cacheExpiration as zero second;
-//        if (mFirebaseRemoteConfig.getInfo().getConfigSettings().isDeveloperModeEnabled()) {
-//            cacheExpiration = 0;
-//        }
-        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
-        FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(3600)
-                .build();
-        mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
-        //Fetching the values here
-        mFirebaseRemoteConfig.fetch().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    mFirebaseRemoteConfig.activateFetched();
-                    Log.d(TAG, "Fetched value: " + mFirebaseRemoteConfig.getString(VERSION_CODE_KEY));
-                    //calling function to check if new version is available or not
-                    checkForUpdate();
-                }else
-                    Toast.makeText(Login_activity.this,"Someting went wrong please try again",Toast.LENGTH_SHORT).show();
+        if (!Session_usertype_id.contentEquals("") && !session_username.contentEquals("") && !session_password.contentEquals("")) {
+            /*&&
+        } !session_emailid.contentEquals("")) {*/
+            loginstatus = 1;
+            if (!cd.isConnectingToInternet()) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(Login_activity.this);
+                alert.setMessage("No Internet Connection");
+                alert.setPositiveButton("OK", null);
+                alert.show();
+            } else {
+//                Intent HomeScreenIntent = new Intent(Login_activity.this, MainActivity.class);
+                Intent HomeScreenIntent = new Intent(Login_activity.this, MainActivity.class);
+                startActivity(HomeScreenIntent);
+                finish();
             }
-        });
-
-        Log.d(TAG, "Default value: " + mFirebaseRemoteConfig.getString(VERSION_CODE_KEY));
+        }
 
 
         if (!cd.isConnectingToInternet()) {
@@ -640,52 +616,5 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
         }
 
     }
-    private void checkForUpdate() {
-        int latestAppVersion = (int) mFirebaseRemoteConfig.getDouble(VERSION_CODE_KEY);
-        if (latestAppVersion > getCurrentVersionCode()) {
-            new AlertDialog.Builder(this).setTitle("Please Update the App")
-                    .setMessage("A new version of this app is available. Please update it").setPositiveButton(
-                    "OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
-                            try {
 
-                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=com.mobi.efficacious.TraffordSchool&hl=en")));
-                                finish();
-                            } catch (android.content.ActivityNotFoundException anfe) {
-
-                            }
-                        }
-                    }).setCancelable(false).show();
-        } else {
-            if (!Session_usertype_id.contentEquals("") && !session_username.contentEquals("") && !session_password.contentEquals("")) {
-            /*&&
-        } !session_emailid.contentEquals("")) {*/
-                loginstatus = 1;
-                if (!cd.isConnectingToInternet()) {
-
-                    AlertDialog.Builder alert = new AlertDialog.Builder(Login_activity.this);
-                    alert.setMessage("No Internet Connection");
-                    alert.setPositiveButton("OK", null);
-                    alert.show();
-
-                } else {
-//                Intent HomeScreenIntent = new Intent(Login_activity.this, MainActivity.class);
-                    Intent HomeScreenIntent = new Intent(Login_activity.this, MainActivity.class);
-                    startActivity(HomeScreenIntent);
-                    finish();
-                }
-            }
-            Toast.makeText(this,"This app is already upto date", Toast.LENGTH_SHORT).show();
-        }
-    }
-    private int getCurrentVersionCode() {
-        try {
-            return getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return -1;
-    }
 }

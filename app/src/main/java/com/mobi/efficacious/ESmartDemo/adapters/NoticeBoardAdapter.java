@@ -1,14 +1,21 @@
 package com.mobi.efficacious.ESmartDemo.adapters;
 
+import android.content.Context;
 import android.graphics.Color;
+import android.net.Uri;
+import android.text.Html;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.mobi.efficacious.ESmartDemo.R;
 import com.mobi.efficacious.ESmartDemo.entity.DashboardDetail;
@@ -16,8 +23,10 @@ import com.mobi.efficacious.ESmartDemo.entity.DashboardDetail;
 
 public class NoticeBoardAdapter extends RecyclerView.Adapter<NoticeBoardAdapter.ViewHolder> {
     private ArrayList<DashboardDetail> data;
-    public NoticeBoardAdapter(ArrayList<DashboardDetail> dataList) {
+    Context mcontext;
+    public NoticeBoardAdapter(ArrayList<DashboardDetail> dataList, Context context) {
         data = dataList;
+        mcontext = context;
     }
 
     @Override
@@ -35,7 +44,11 @@ public class NoticeBoardAdapter extends RecyclerView.Adapter<NoticeBoardAdapter.
             holder.Lastdate.setTextColor(Color.RED);
             holder.Issuedate.setText(data.get(position).getIssueDate().toString());
             holder.Lastdate.setText(data.get(position).getEndDate().toString());
-            holder.Notice.setText("Notice:"+data.get(position).getNotice().toString());
+//            holder.Notice.setText(data.get(position).getNotice().toString());
+//            Linkify.addLinks(holder.Notice, Linkify.WEB_URLS);
+//            holder.Notice.setLinkTextColor(ContextCompat.getColor(mcontext,
+//                    R.color.caldroid_holo_blue_dark));
+            holder.Notice.setText("Notice:"+ data.get(position).getNotice().toString());
             holder.Subject.setText("Subject:"+data.get(position).getSubject().toString());
         }catch (Exception ex)
         {

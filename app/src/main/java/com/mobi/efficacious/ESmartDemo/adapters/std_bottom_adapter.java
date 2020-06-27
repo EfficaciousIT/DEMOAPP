@@ -52,6 +52,7 @@ public class std_bottom_adapter extends RecyclerView.Adapter<std_bottom_adapter.
         try {
             if(!TextUtils.isEmpty(StandardDetailListDetails.get(position).getVchStandardName())){
                 holder.detail_tv.setText(StandardDetailListDetails.get(position).getVchStandardName());
+
             }else {
                 holder.detail_tv.setText("");
             }

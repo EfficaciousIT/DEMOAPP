@@ -23,6 +23,8 @@ import com.mobi.efficacious.ESmartDemo.activity.MainActivity;
 import com.mobi.efficacious.ESmartDemo.dialogbox.Standard_division_dialog;
 import com.mobi.efficacious.ESmartDemo.entity.StandardDetail;
 import com.mobi.efficacious.ESmartDemo.entity.StandardDetailsPojo;
+import com.mobi.efficacious.ESmartDemo.fragment.OnlineClassDetail;
+import com.mobi.efficacious.ESmartDemo.fragment.OnlineClassTimetable;
 import com.mobi.efficacious.ESmartDemo.fragment.StandardWise_Book;
 import com.mobi.efficacious.ESmartDemo.fragment.StudentExamFragment;
 import com.mobi.efficacious.ESmartDemo.fragment.StudentSyllabusFragment;
@@ -191,6 +193,28 @@ public class StandardAdapter extends RecyclerView.Adapter<StandardAdapter.Standa
                         intent.putExtra("std_name", dataList.get(position).getVchStandardName());
                         intent.putExtra("selected_layout", "Stdwise_name");
                         mcontext.startActivity(intent);
+                    } catch (Exception ex) {
+
+                    }
+
+                }else if (pagename.equalsIgnoreCase("OnlineTimetable")) {
+                    try {
+                        OnlineClassTimetable onlineClassTimetable = new OnlineClassTimetable();
+                        Bundle args = new Bundle();
+                        args.putString("std_id", String.valueOf(dataList.get(position).getIntStandardId()));
+                        onlineClassTimetable.setArguments(args);
+                        MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, onlineClassTimetable).commitAllowingStateLoss();
+                    } catch (Exception ex) {
+
+                    }
+
+                } else if (pagename.equalsIgnoreCase("OnlineClassDetail")) {
+                    try {
+                        OnlineClassDetail onlineClassDetail = new OnlineClassDetail();
+                        Bundle args = new Bundle();
+                        args.putString("std_id", String.valueOf(dataList.get(position).getIntStandardId()));
+                        onlineClassDetail.setArguments(args);
+                        MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, onlineClassDetail).commitAllowingStateLoss();
                     } catch (Exception ex) {
 
                     }

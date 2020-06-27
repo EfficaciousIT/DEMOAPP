@@ -1,10 +1,14 @@
 package com.mobi.efficacious.ESmartDemo.Interface;
 
 
+import com.mobi.efficacious.ESmartDemo.entity.AssignBookDetailLibPojo;
 import com.mobi.efficacious.ESmartDemo.entity.AttendanceDetailPojo;
+import com.mobi.efficacious.ESmartDemo.entity.BookDetailLibPojo;
+import com.mobi.efficacious.ESmartDemo.entity.CategoryDetailLibPojo;
 import com.mobi.efficacious.ESmartDemo.entity.ChatDetail;
 import com.mobi.efficacious.ESmartDemo.entity.ChatDetailsPojo;
 import com.mobi.efficacious.ESmartDemo.entity.DashboardDetailsPojo;
+import com.mobi.efficacious.ESmartDemo.entity.DeptDetailPojo;
 import com.mobi.efficacious.ESmartDemo.entity.EventDetail;
 import com.mobi.efficacious.ESmartDemo.entity.EventDetailPojo;
 import com.mobi.efficacious.ESmartDemo.entity.LeaveDetail;
@@ -22,10 +26,14 @@ import com.mobi.efficacious.ESmartDemo.entity.StandardDetail;
 import com.mobi.efficacious.ESmartDemo.entity.StandardDetailsPojo;
 import com.mobi.efficacious.ESmartDemo.entity.StudentStandardwiseDetailPojo;
 import com.mobi.efficacious.ESmartDemo.entity.MarkAttendence;
+import com.mobi.efficacious.ESmartDemo.entity.SubjectDetailLibPojo;
 import com.mobi.efficacious.ESmartDemo.entity.SyllabusDetailPDFPojo;
 import com.mobi.efficacious.ESmartDemo.entity.SyllabusDetailPojo;
 import com.mobi.efficacious.ESmartDemo.entity.TeacherDetailPojo;
+import com.mobi.efficacious.ESmartDemo.entity.TeacherLibDetailPojo;
 import com.mobi.efficacious.ESmartDemo.entity.TimeTableDetailPojo;
+import com.mobi.efficacious.ESmartDemo.entity.VersionDetailPojo;
+
 import io.reactivex.Observable;
 
 import okhttp3.MultipartBody;
@@ -60,7 +68,8 @@ public interface DataService {
     @GET("Dashboard")
     Observable<DashboardDetailsPojo> getDashboardDetailsTudent(@Query("command") String command,
                                                          @Query("intstanderd_id") String intstanderd_id,
-                                                         @Query("intSchool_id") String intSchool_id);
+                                                         @Query("intSchool_id") String intSchool_id,
+                                                         @Query("intAcademic_id") String intAcademic_id);
 
     @GET("Dashboard")
     Observable<DashboardDetailsPojo> getDashboardDetails(@Query("command") String command,
@@ -80,16 +89,17 @@ public interface DataService {
                                                            @Query("intStandard_id") String intStandard_id,
                                                             @Query("dtLecture_date") String dtLecture_date);
     @GET("OnlineClassSchedule")
-    Observable<OnlineClassDetailPojo> getOnlineClassDetails(@Query("command") String command,
+    Observable<OnlineClassDetailPojo> getOnlineClassDetailsAdmin(@Query("command") String command,
                                                            @Query("intAcademic_id") String intAcademic_id,
                                                            @Query("intSchool_id") String intSchool_id,
-                                                            @Query("dtLecture_date") String dtLecture_date);
+                                                            @Query("dtLecture_date") String dtLecture_date,
+                                                            @Query("intStandard_id") String intStandard_id);
     @GET("OnlineClassSchedule")
     Observable<OnlineClassDetailPojo> getOnlineClassDetailsT(@Query("command") String command,
                                                              @Query("intAcademic_id") String intAcademic_id,
                                                              @Query("intSchool_id") String intSchool_id,
                                                              @Query("intTeacher_id") String intTeacher_id,
-                                                             @Query("dtLecture_date") String dtLecture_date);
+                                                             @Query("dtLecture_date") String dtLecture_date,@Query("intStandard_id") String intStandard_id);
 
     @GET("OnlineClassTimetable")
     Observable<OnlineClassTimetablePojo> getOnlineClassTimetableS(@Query("command") String command,
@@ -103,13 +113,15 @@ public interface DataService {
                                                                  @Query("intTeacher_id") String intTeacher_id,
                                                                  @Query("intAcademic_id") String intAcademic_id,
                                                                  @Query("intSchool_id") String intSchool_id,
-                                                                 @Query("dtLecture_date") String dtLecture_date);
+                                                                 @Query("dtLecture_date") String dtLecture_date,
+                                                                 @Query("intStandard_id") String intStandard_id);
 
     @GET("OnlineClassTimetable")
-    Observable<OnlineClassTimetablePojo> getOnlineClassTimetable(@Query("command") String command,
+    Observable<OnlineClassTimetablePojo> getOnlineClassTimetableAdmin(@Query("command") String command,
                                                              @Query("intAcademic_id") String intAcademic_id,
                                                              @Query("intSchool_id") String intSchool_id,
-                                                                 @Query("dtLecture_date") String dtLecture_date);
+                                                                 @Query("dtLecture_date") String dtLecture_date,
+                                                                 @Query("intStandard_id") String intStandard_id);
 
     @GET("OnlineClassTimetable")
     Observable<OnlineClassDetailsPojo> getOnlineTTdetailById(@Query("command") String command,
@@ -306,7 +318,56 @@ public interface DataService {
                                                            @Query("intSTD_id") String intSTD_id);
 
     @GET("Library")
-    Observable<LibraryDetailPojo> getLibraryDetails(@Query("command") String command,
-                                                    @Query("intSchool_id") String intSchool_id,
-                                                    @Query("intStandard_id") String intStandard_id);
+    Observable<SubjectDetailLibPojo> getLibraryDetails(@Query("command") String command,
+                                                       @Query("intSchool_id") String intSchool_id,
+                                                       @Query("intStandard_id") String intStandard_id);
+    @GET("Library")
+    Observable<CategoryDetailLibPojo> getLibraryCategoryDetails(@Query("command") String command,
+                                                        @Query("intSchool_id") String intSchool_id);
+
+    @GET("Library")
+    Observable<BookDetailLibPojo> getLibraryBookDetails(@Query("command") String command,
+                                                        @Query("intSchool_id") String intSchool_id,
+                                                        @Query("intBookLanguage_id") String intBookLanguage_id,
+                                                        @Query("intStandard_id") String intStandard_id,
+                                                        @Query("intCategory_id") String intCategory_id);
+
+    @GET("Library")
+    Observable<AssignBookDetailLibPojo> getLibraryAsiignBookDetails(@Query("command") String command,
+                                                                    @Query("intSchool_id") String intSchool_id,
+                                                                    @Query("intStudent_id") String intStudent_id,
+                                                                    @Query("intstandard_id") String intStandard_id,
+                                                                    @Query("intBookLanguage_id") String ntBookLanguage_id,
+                                                                    @Query("dtAssigned_Date") String dtAssigned_Date,
+                                                                    @Query("dtReturn_date") String dtReturn_date);
+
+    @GET("Library")
+    Observable<AssignBookDetailLibPojo> getLibraryAsiignBookDetailsStudent(@Query("command") String command,
+                                                                    @Query("intstandard_id") String intstandard_id,
+                                                                    @Query("intSchool_id") String intSchool_id,
+                                                                    @Query("intStudent_id") String intStudent_id,
+                                                                    @Query("dtAssigned_Date") String dtAssigned_Date,
+                                                                    @Query("dtReturn_date") String dtReturn_date,
+                                                                    @Query("intBookLanguage_id") String intBookLanguage_id);
+    @GET("APKVersion")
+    Observable<VersionDetailPojo> getVersionDetails(@Query("command") String command,
+                                                    @Query("intschool_id") String intSchool_id);
+
+    @GET("Library")
+    Observable<SubjectDetailLibPojo> getLibraryDetailsTeacher(@Query("command") String command,
+                                                       @Query("intSchool_id") String intSchool_id);
+
+    @GET("OnlineClassTimetable")
+    Observable<DeptDetailPojo> getDepartment(@Query("command") String command,
+                                                        @Query("intSchool_id") String intSchool_id,
+                                                        @Query("intusertype_id") String intusertype_id);
+
+    @GET("Library")
+    Observable<TeacherLibDetailPojo> getLibraryAsiignBookDetailsTeacher(@Query("command") String command,
+                                                                        @Query("intSchool_id") String intSchool_id,
+                                                                        @Query("intTeacher_id") String intTeacher_id,
+                                                                        @Query("intDepartment_id") String intDepartment_id,
+                                                                        @Query("intBookLanguage_id") String intBookLanguage_id,
+                                                                        @Query("dtAssigned_Date") String dtAssigned_Date,
+                                                                        @Query("dtReturn_date") String dtReturn_date);
 }

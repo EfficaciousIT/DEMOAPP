@@ -1,5 +1,6 @@
 package com.mobi.efficacious.ESmartDemo.adapters;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,7 @@ public class NoticeBoardAdapterr extends RecyclerView.Adapter<NoticeBoardAdapter
         {
             holder.Issuedate.setText(result.get("IssueDate").toString());
             holder.Lastdate.setText(result.get("LastDate").toString());
-            holder.Notice.setText("Notice:"+result.get("Notice").toString());
+            holder.Notice.setText("Notice:"+ result.get("Notice").toString());
             holder.Subject.setText("Subject:"+result.get("Subject").toString());
         }catch (Exception ex)
         {
