@@ -129,7 +129,7 @@ public class Noticeboard  extends Fragment {
         }else if(role_id.contentEquals("1"))
             {
                 Log.d("RESULT234",""+intStandard_id+"Sss"+academic_id);
-                call = service.getDashboardDetailsTudent("NoticeBoardStudent", intStandard_id,Schooli_id);
+                call = service.getDashboardDetailsTudent("NoticeBoardStudent", intStandard_id,Schooli_id,academic_id);
             }
             else if(role_id.contentEquals("4"))
             {
@@ -178,7 +178,7 @@ public class Noticeboard  extends Fragment {
             if ((taskListDataList != null && !taskListDataList.isEmpty())) {
                 mrecyclerView.setHasFixedSize(true);
                 mrecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                madapter = new NoticeBoardAdapter(taskListDataList);
+                madapter = new NoticeBoardAdapter(taskListDataList,getContext());
                 mrecyclerView.setAdapter(madapter);
             } else {
                 Toast toast = Toast.makeText(getActivity(),

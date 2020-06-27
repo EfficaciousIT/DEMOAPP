@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.mobi.efficacious.ESmartDemo.Interface.DataService;
 import com.mobi.efficacious.ESmartDemo.R;
 import com.mobi.efficacious.ESmartDemo.WeeklyCalender.WeekCalendar;
 import com.mobi.efficacious.ESmartDemo.WeeklyCalender.listener.OnDateClickListener;
+import com.mobi.efficacious.ESmartDemo.activity.MainActivity;
 import com.mobi.efficacious.ESmartDemo.adapters.OnlineClassTimetableAdapter;
 import com.mobi.efficacious.ESmartDemo.common.ConnectionDetector;
 import com.mobi.efficacious.ESmartDemo.database.Databasehelper;
@@ -76,6 +78,8 @@ public class OnlineClassTimetable extends Fragment {
         try{
             if(role_id.contentEquals("1")||role_id.contentEquals("2")){
                 intStandard_id= settings.getString("TAG_STANDERDID", "");
+            }else {
+                intStandard_id=getArguments().getString("std_id");
             }
         }catch (Exception ex){}
 
@@ -110,6 +114,32 @@ public class OnlineClassTimetable extends Fragment {
             }
 
         });
+
+        myview.setFocusableInTouchMode(true);
+        myview.requestFocus();
+        myview.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        try {
+                            if (role_id.contentEquals("1") || role_id.contentEquals("2")) {
+
+                            } else {
+                                Student_Std_Fragment student_std_activity = new Student_Std_Fragment();
+                                Bundle args = new Bundle();
+                                args.putString("pagename", "OnlineTimetable");
+                                student_std_activity.setArguments(args);
+                                MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, student_std_activity).commitAllowingStateLoss();
+                            }
+                        } catch (Exception ex) {
+                        }
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
         return myview;
     }
 
@@ -125,11 +155,11 @@ public class OnlineClassTimetable extends Fragment {
             }
             // Admin
             else if(role_id.contentEquals("5")){
-                call = service.getOnlineClassTimetable("AdminWiseList", academic_id, Schooli_id,strSelectedDt);
+                call = service.getOnlineClassTimetableAdmin("AdminWiseList", academic_id, Schooli_id,strSelectedDt,intStandard_id);
             }
             //Teachers
             else if(role_id.contentEquals("3")){
-                call = service.getOnlineClassTimetable("TeacherWiseList", teacher_Id, academic_id, Schooli_id,strSelectedDt);
+                call = service.getOnlineClassTimetable("TeacherWiseList", teacher_Id, academic_id, Schooli_id,strSelectedDt,intStandard_id);
             }
 
             call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<OnlineClassTimetablePojo>() {

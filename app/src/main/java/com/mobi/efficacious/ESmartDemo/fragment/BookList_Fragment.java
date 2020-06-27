@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -34,9 +35,12 @@ import com.mobi.efficacious.ESmartDemo.entity.LibraryDetail;
 import com.mobi.efficacious.ESmartDemo.entity.LibraryDetailPojo;
 import com.mobi.efficacious.ESmartDemo.entity.StandardDetail;
 import com.mobi.efficacious.ESmartDemo.entity.StandardDetailsPojo;
+import com.mobi.efficacious.ESmartDemo.entity.SubjLibraryDetail;
+import com.mobi.efficacious.ESmartDemo.entity.SubjectDetailLibPojo;
 import com.mobi.efficacious.ESmartDemo.webApi.RetrofitInstance;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Set;
 
 import io.reactivex.Observable;
@@ -66,6 +70,8 @@ public class BookList_Fragment extends Fragment implements std_bottom_adapter.ST
     TextView std_tv1, std_tv;
     BottomSheetDialog dialog;
     Book_Adapter madapter;
+    ImageView arrow;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -73,7 +79,6 @@ public class BookList_Fragment extends Fragment implements std_bottom_adapter.ST
         settings = getActivity().getSharedPreferences(PREFRENCES_NAME, Context.MODE_PRIVATE);
         Schooli_id = settings.getString("TAG_SCHOOL_ID", "");
         userid = settings.getString("TAG_USERID", "");
-        Standard_id = settings.getString("TAG_STANDERDID", "");
         role_id = settings.getString("TAG_USERTYPEID", "");
         academic_id = settings.getString("TAG_ACADEMIC_ID", "");
         recycler = (RecyclerView) mview.findViewById(R.id.recycler);
@@ -81,27 +86,35 @@ public class BookList_Fragment extends Fragment implements std_bottom_adapter.ST
         std_relative = mview.findViewById(R.id.std_relative);
         std_tv1 = mview.findViewById(R.id.std_tv1);
         std_tv = mview.findViewById(R.id.std_tv);
+        arrow = mview.findViewById(R.id.arrow);
         cd = new ConnectionDetector(getContext());
         progress = new ProgressDialog(getActivity());
         progress.setCancelable(false);
         progress.setCanceledOnTouchOutside(false);
         progress.setMessage("loading...");
-//        progress.show();
+        if(role_id.contentEquals("1")||role_id.contentEquals("2")){
+            Standard_id = settings.getString("TAG_STANDERDID", "");
+            std_linear.setVisibility(View.GONE);
+            std_relative.setVisibility(View.GONE);
+        }else {
+            std_linear.setVisibility(View.VISIBLE);
+            std_relative.setVisibility(View.VISIBLE);
+        }
         if (!cd.isConnectingToInternet()) {
-
             AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
             alert.setMessage("No InternetConnection");
             alert.setPositiveButton("OK", null);
             alert.show();
-
         } else {
-
             try {
                 if (role_id.contentEquals("3")) {
                     userid = settings.getString("TAG_USERID", "");
-                    StudenStandardtAsync();
+                   // StudenStandardtAsync();
+                    LoginAsync();
                 } else if (role_id.contentEquals("5") || role_id.contentEquals("6") || role_id.contentEquals("7")) {
                     LoginAsync();
+                }else if(role_id.contentEquals("1")||role_id.contentEquals("2")){
+                    StudentAsync (Integer.parseInt(Standard_id));
                 }
             } catch (Exception ex) {
 
@@ -110,13 +123,26 @@ public class BookList_Fragment extends Fragment implements std_bottom_adapter.ST
         std_linear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showlBottomSheetDialog(getActivity());
+                if(role_id.contentEquals("3")||role_id.contentEquals("5")||role_id.contentEquals("6")||role_id.contentEquals("7")){
+                    showlBottomSheetDialog(getActivity());
+                }
+
             }
         });
         std_relative.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showlBottomSheetDialog(getActivity());
+                if(role_id.contentEquals("3")||role_id.contentEquals("5")||role_id.contentEquals("6")||role_id.contentEquals("7")){
+//                    showlBottomSheetDialog(getActivity());
+                    if(recycler.getVisibility()==View.VISIBLE){
+                        recycler.setVisibility(View.GONE);
+                       arrow.animate().rotation(180).start();
+                    }else {
+                        recycler.setVisibility(View.VISIBLE);
+                        arrow.animate().rotation(0).start();
+                    }
+
+                }
             }
         });
         return mview;
@@ -168,18 +194,21 @@ public class BookList_Fragment extends Fragment implements std_bottom_adapter.ST
 
     public void generateStandradByLectures(ArrayList<StandardDetail> taskListDataList) {
         try {
-            standardDetailArrayList = taskListDataList;
-            if ((taskListDataList != null && !taskListDataList.isEmpty())) {
-
-            } else {
-                Toast toast = Toast.makeText(getActivity(),
-                        "No Data Available",
-                        Toast.LENGTH_SHORT);
-                View toastView = toast.getView();
-                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                toastView.setBackgroundResource(R.drawable.no_data_available);
-                toast.show();
-            }
+            standardDetailArrayList.addAll(taskListDataList);
+//            if ((taskListDataList != null && !taskListDataList.isEmpty())) {
+//                std_tv.setText(standardDetailArrayList.get(0).getVchStandardName());
+//                std_tv1.setText(standardDetailArrayList.get(0).getVchStandardName());
+//                Standard_id= String.valueOf(standardDetailArrayList.get(0).getIntStandardId());
+//                StudentAsync (standardDetailArrayList.get(0).getIntStandardId());
+//            } else {
+//                Toast toast = Toast.makeText(getActivity(),
+//                        "No Data Available",
+//                        Toast.LENGTH_SHORT);
+//                View toastView = toast.getView();
+//                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+//                toastView.setBackgroundResource(R.drawable.no_data_available);
+//                toast.show();
+//            }
 
         } catch (Exception ex) {
             Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
@@ -230,22 +259,23 @@ public class BookList_Fragment extends Fragment implements std_bottom_adapter.ST
         std_tv.setText(details);
         std_tv1.setText(details);
         dialog.dismiss();
+        Standard_id= String.valueOf(id);
         StudentAsync (id);
     }
     public void  StudentAsync (int standard_id){
         try {
             DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
-            Observable<LibraryDetailPojo> call = service.getLibraryDetails("GetStandardWiseBookList",Schooli_id, String.valueOf(standard_id));
-            call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<LibraryDetailPojo>() {
+            Observable<SubjectDetailLibPojo> call = service.getLibraryDetails("GetStandardWiseBookList",Schooli_id, String.valueOf(standard_id));
+            call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<SubjectDetailLibPojo>() {
                 @Override
                 public void onSubscribe(Disposable disposable) {
                     progress.show();
                 }
 
                 @Override
-                public void onNext(LibraryDetailPojo body) {
+                public void onNext(SubjectDetailLibPojo body) {
                     try {
-                        generateBookList((ArrayList<LibraryDetail>) body.getLibraryDetail());
+                        generateBookList((ArrayList<SubjLibraryDetail>) body.getLibraryDetail());
                     } catch (Exception ex) {
                         progress.dismiss();
                         Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
@@ -270,15 +300,15 @@ public class BookList_Fragment extends Fragment implements std_bottom_adapter.ST
         }
     }
 
-    public void generateBookList(ArrayList<LibraryDetail> taskListDataList) {
+    public void generateBookList(ArrayList<SubjLibraryDetail> taskListDataList) {
         try {
             if ((taskListDataList != null && !taskListDataList.isEmpty())) {
-                madapter = new Book_Adapter(taskListDataList,getActivity());
+                madapter = new Book_Adapter(taskListDataList,getActivity(),Standard_id);
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 recycler.setLayoutManager(layoutManager);
                 recycler.setAdapter(madapter);
             } else {
-                madapter = new Book_Adapter(taskListDataList,getActivity());
+                madapter = new Book_Adapter(taskListDataList,getActivity(),Standard_id);
                 RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
                 recycler.setLayoutManager(layoutManager);
                 recycler.setAdapter(madapter);

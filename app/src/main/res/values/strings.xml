@@ -33,4 +33,6 @@
     <string name="tab_text_2">Tab 2</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="search">Search</string>
+    <string name="close">Close</string>
 </resources>

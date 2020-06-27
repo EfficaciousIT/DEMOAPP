@@ -49,7 +49,7 @@ public class NoticeboardDetail {
     private Integer intSchoolId;
     @SerializedName("intAcademic_id")
     @Expose
-    private Integer intAcademicId;
+    private String intAcademicId;
 
     public Integer getIntNoticeId() {
         return intNoticeId;
@@ -163,15 +163,15 @@ public class NoticeboardDetail {
         this.intSchoolId = intSchoolId;
     }
 
-    public Integer getIntAcademicId() {
+    public String getIntAcademicId() {
         return intAcademicId;
     }
 
-    public void setIntAcademicId(Integer intAcademicId) {
+    public void setIntAcademicId(String intAcademicId) {
         this.intAcademicId = intAcademicId;
     }
 
-    public NoticeboardDetail(Integer intUserTypeId, Integer intStandardId, Integer intDepartmentId, Integer intTeacherId, String dtIssueDate, String dtEndDate, String vchSubject, String vchNotice, Integer intInsertedBy, String insertIP, Integer intSchoolId) {
+    public NoticeboardDetail(Integer intUserTypeId, Integer intStandardId, Integer intDepartmentId, Integer intTeacherId, String dtIssueDate, String dtEndDate, String vchSubject, String vchNotice, Integer intInsertedBy, String insertIP, Integer intSchoolId, String intAcademicId) {
         this.intUserTypeId = intUserTypeId;
         this.intStandardId = intStandardId;
         this.intDepartmentId = intDepartmentId;
@@ -183,5 +183,6 @@ public class NoticeboardDetail {
         this.intInsertedBy = intInsertedBy;
         this.insertIP = insertIP;
         this.intSchoolId = intSchoolId;
+        this.intAcademicId = intAcademicId;
     }
 }

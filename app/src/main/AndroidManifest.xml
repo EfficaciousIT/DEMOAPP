@@ -27,7 +27,16 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="778c8e4ea7b696aa559ee17eba4355731cf6b463" />
+        <activity
+            android:name="com.mobi.efficacious.ESmartDemo.activity.SplashScreen"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.mobi.efficacious.ESmartDemo.activity.Login_activity"
             android:label="@string/app_name"
@@ -35,7 +44,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
@@ -102,6 +111,8 @@
         <activity
             android:name="com.mobi.efficacious.ESmartDemo.activity.Fee_Payment_History"
             android:label="Payment History" />
+        <activity android:name=".activity.LibCategoryBooklist_fragment"
+            android:label="Book List"/>
 
         <service android:name="com.mobi.efficacious.ESmartDemo.FCMServices.MyFirebaseMessagingService">
             <intent-filter>

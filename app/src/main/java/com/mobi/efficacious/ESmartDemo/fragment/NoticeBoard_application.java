@@ -521,7 +521,7 @@ public class NoticeBoard_application extends Fragment {
 //                call = service.InsertNotice("NoticeBoardStudent", noticeboardDetail);
 //            }else{
             service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
-            noticeboardDetail = new NoticeboardDetail(Integer.parseInt(Usertype_selected), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "", Integer.parseInt(Schooli_id));
+            noticeboardDetail = new NoticeboardDetail(Integer.parseInt(Usertype_selected), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "", Integer.parseInt(Schooli_id),Year_id);
             Log.d("RESULT234","SCHOOL ID: "+Integer.parseInt(Schooli_id));
             Log.d("RESULT234","ISSUE DATE: "+fromdate);
             Log.d("RESULT234","END DATE: "+enddate);
@@ -582,7 +582,7 @@ public class NoticeBoard_application extends Fragment {
                 } else {
                     if(UserAll.contentEquals("5")) {
                         DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
-                        NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(Usertype_selected), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "192.168.1.150", Integer.parseInt(Schooli_id));
+                        NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(Usertype_selected), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "192.168.1.150", Integer.parseInt(Schooli_id),Year_id);
                         Log.d("RESULT234","SCHOOL ID: "+Integer.parseInt(Schooli_id));
                         Log.d("RESULT234","ISSUE DATE: "+fromdate);
                         Log.d("RESULT234","END DATE: "+enddate);
@@ -642,7 +642,7 @@ public class NoticeBoard_application extends Fragment {
 
                 } else {
                     DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
-                    NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(UserAll), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "", 1);
+                    NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(UserAll), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "", 1,Year_id);
                     Observable<ResponseBody> call = service.InsertNotice("insert", noticeboardDetail);
                     call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                         @Override
@@ -698,7 +698,7 @@ public class NoticeBoard_application extends Fragment {
 
                 } else {
                     DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
-                    NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(UserAll), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "", 2);
+                    NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(UserAll), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "", 2,Year_id);
                     Observable<ResponseBody> call = service.InsertNotice("insert", noticeboardDetail);
                     call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                         @Override
@@ -751,7 +751,7 @@ public class NoticeBoard_application extends Fragment {
             dialog.setCanceledOnTouchOutside(false);
             dialog.setMessage("Processing...");
             DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
-            NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(Usertype_selected), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "",1);
+            NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(Usertype_selected), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "",1,Year_id);
             Observable<ResponseBody> call = service.InsertNotice("insert", noticeboardDetail);
             call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                 @Override
@@ -794,7 +794,7 @@ public class NoticeBoard_application extends Fragment {
             dialog.setCanceledOnTouchOutside(false);
             dialog.setMessage("Processing...");
             DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
-            NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(Usertype_selected), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "", 2);
+            NoticeboardDetail noticeboardDetail = new NoticeboardDetail(Integer.parseInt(Usertype_selected), Integer.parseInt(Standard_selected), 0, 0, fromdate, enddate, Notice_Subject, Notice_Detail, Integer.parseInt(userid), "", 2,Year_id);
             Observable<ResponseBody> call = service.InsertNotice("insert", noticeboardDetail);
             call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<ResponseBody>() {
                 @Override

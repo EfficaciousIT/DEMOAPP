@@ -133,18 +133,18 @@ String academic_id,role_id,userid,standard_id;
 
 
         }
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                madapter.getFilter().filter(newText);
-                return true;
-            }
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                madapter.getFilter().filter(newText);
+//                return true;
+//            }
+//        });
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -201,30 +201,30 @@ String academic_id,role_id,userid,standard_id;
     }
 
     public void generateBookList(ArrayList<LibraryDetail> taskListDataList) {
-        try {
-            if ((taskListDataList != null && !taskListDataList.isEmpty())) {
-                madapter = new Book_Adapter(taskListDataList,getActivity());
-
-                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-
-                recyclerView.setLayoutManager(layoutManager);
-
-                recyclerView.setAdapter(madapter);
-                setupSearchView();
-            } else {
-                Toast toast = Toast.makeText(getActivity(),
-                        "No Data Available",
-                        Toast.LENGTH_SHORT);
-                View toastView = toast.getView();
-                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                toastView.setBackgroundResource(R.drawable.no_data_available);
-                toast.show();
-            }
-
-        } catch (Exception ex) {
-            progress.dismiss();
-            Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
-        }
+//        try {
+//            if ((taskListDataList != null && !taskListDataList.isEmpty())) {
+//                madapter = new Book_Adapter(taskListDataList,getActivity());
+//
+//                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+//
+//                recyclerView.setLayoutManager(layoutManager);
+//
+//                recyclerView.setAdapter(madapter);
+//                setupSearchView();
+//            } else {
+//                Toast toast = Toast.makeText(getActivity(),
+//                        "No Data Available",
+//                        Toast.LENGTH_SHORT);
+//                View toastView = toast.getView();
+//                toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+//                toastView.setBackgroundResource(R.drawable.no_data_available);
+//                toast.show();
+//            }
+//
+//        } catch (Exception ex) {
+//            progress.dismiss();
+//            Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
+//        }
     }
 
 }

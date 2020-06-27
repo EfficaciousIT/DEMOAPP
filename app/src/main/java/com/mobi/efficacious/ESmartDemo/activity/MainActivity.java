@@ -564,8 +564,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } else if (id == R.id.nav_library) {
                         try {
                             title = "Library";
-                           mfragment.beginTransaction().replace(R.id.content_main, new All_Standard_Book()).commitAllowingStateLoss();
-//                            mfragment.beginTransaction().replace(R.id.content_main, new LibTab_layout()).commitAllowingStateLoss();
+//                           mfragment.beginTransaction().replace(R.id.content_main, new All_Standard_Book()).commitAllowingStateLoss();
+                            mfragment.beginTransaction().replace(R.id.content_main, new LibTab_layout()).commitAllowingStateLoss();
 
                         } catch (Exception ex) {
                         }
@@ -678,14 +678,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                    else if (id == R.id.nav_online_timetable) {
                         try {
                             title = "Online Timetable";
-                            mfragment.beginTransaction().replace(R.id.content_main, new OnlineClassTimetable()).commitAllowingStateLoss();
+                            Student_Std_Fragment student_std_activity = new Student_Std_Fragment();
+                            Bundle args = new Bundle();
+                            args.putString("pagename", "OnlineTimetable");
+                            student_std_activity.setArguments(args);
+                            MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, student_std_activity).commitAllowingStateLoss();
                         } catch (Exception ex) {
                         }
                     }
                     else if (id == R.id.nav_online_classes) {
                         try {
                             title = "Online Class Detail";
-                            mfragment.beginTransaction().replace(R.id.content_main, new OnlineClassDetail()).commitAllowingStateLoss();
+                            Student_Std_Fragment student_std_activity = new Student_Std_Fragment();
+                            Bundle args = new Bundle();
+                            args.putString("pagename", "OnlineClassDetail");
+                            student_std_activity.setArguments(args);
+                            MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, student_std_activity).commitAllowingStateLoss();
                         } catch (Exception ex) {
                         }
                     }
@@ -916,11 +924,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } else if (id == R.id.nav_library) {
                         try {
                             title = "Library";
-                            Student_Std_Fragment student_std_activity = new Student_Std_Fragment();
-                            Bundle args = new Bundle();
-                            args.putString("pagename", "LibraryTeacher");
-                            student_std_activity.setArguments(args);
-                            MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, student_std_activity).commitAllowingStateLoss();
+//                            Student_Std_Fragment student_std_activity = new Student_Std_Fragment();
+//                            Bundle args = new Bundle();
+//                            args.putString("pagename", "LibraryTeacher");
+//                            student_std_activity.setArguments(args);
+//                            MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, student_std_activity).commitAllowingStateLoss();
+                            mfragment.beginTransaction().replace(R.id.content_main, new LibTab_layout()).commitAllowingStateLoss();
                         } catch (Exception ex) {
                         }
                     } else if (id == R.id.nav_chat) {
@@ -959,14 +968,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     else if (id == R.id.nav_online_timetable) {
                         try {
                             title = "Online Timetable";
-                            mfragment.beginTransaction().replace(R.id.content_main, new OnlineClassTimetable()).commitAllowingStateLoss();
+                            Student_Std_Fragment student_std_activity = new Student_Std_Fragment();
+                            Bundle args = new Bundle();
+                            args.putString("pagename", "OnlineTimetable");
+                            student_std_activity.setArguments(args);
+                            MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, student_std_activity).commitAllowingStateLoss();
                         } catch (Exception ex) {
                         }
                     }
                     else if (id == R.id.nav_online_classes) {
                         try {
                             title = "Online Class Detail";
-                            mfragment.beginTransaction().replace(R.id.content_main, new OnlineClassDetail()).commitAllowingStateLoss();
+                            Student_Std_Fragment student_std_activity = new Student_Std_Fragment();
+                            Bundle args = new Bundle();
+                            args.putString("pagename", "OnlineClassDetail");
+                            student_std_activity.setArguments(args);
+                            MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, student_std_activity).commitAllowingStateLoss();
                         } catch (Exception ex) {
                         }
                     }
@@ -1139,7 +1156,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } else if (id == R.id.nav_library) {
                         try {
                             title = "Library";
-                            mfragment.beginTransaction().replace(R.id.content_main, new StandardWise_Book()).commitAllowingStateLoss();
+//                            mfragment.beginTransaction().replace(R.id.content_main, new StandardWise_Book()).commitAllowingStateLoss();
+                            mfragment.beginTransaction().replace(R.id.content_main, new LibTab_layout()).commitAllowingStateLoss();
 
                         } catch (Exception ex) {
 

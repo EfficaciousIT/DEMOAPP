@@ -487,7 +487,7 @@ public class Admin_Dashboard extends Fragment {
             if ((taskListDataList != null && !taskListDataList.isEmpty())) {
                 noticeboard.setHasFixedSize(true);
                 noticeboard.setLayoutManager(new LinearLayoutManager(getActivity()));
-                madapter = new NoticeBoardAdapter(taskListDataList);
+                madapter = new NoticeBoardAdapter(taskListDataList,getContext());
                 noticeboard.setAdapter(madapter);
             } else {
 

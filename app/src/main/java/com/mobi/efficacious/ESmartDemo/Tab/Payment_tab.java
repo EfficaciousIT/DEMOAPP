@@ -17,21 +17,20 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 import com.mobi.efficacious.ESmartDemo.R;
-import com.mobi.efficacious.ESmartDemo.fragment.AssignBookList_Fragment;
-import com.mobi.efficacious.ESmartDemo.fragment.BookList_Fragment;
-import com.mobi.efficacious.ESmartDemo.fragment.ReturnBookList_Fragment;
+import com.mobi.efficacious.ESmartDemo.fragment.Event_Payment_Fragment;
+import com.mobi.efficacious.ESmartDemo.fragment.Other_Payment_Fragment;
+import com.mobi.efficacious.ESmartDemo.fragment.Payment_Fragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Rahul on 18,May,2020
+ * Created by Rahul on 16,June,2020
  */
-public class LibTab_layout extends Fragment {
+public class Payment_tab extends Fragment {
 
     ViewPager viewPager;
     TabLayout tabLayout;
-    public static String value;
     private static final String PREFRENCES_NAME = "myprefrences";
     SharedPreferences settings;
     String role_id;
@@ -44,7 +43,6 @@ public class LibTab_layout extends Fragment {
         role_id = settings.getString("TAG_USERTYPEID", "");
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
-
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         assert activity.getSupportActionBar() != null;
@@ -70,15 +68,10 @@ public class LibTab_layout extends Fragment {
                 }
             });
         }
-            viewPager.setCurrentItem(1);
     }
 
     private void setViewPagerListener() {
-        if (viewPager!=null)
-            tabLayout.setupWithViewPager(viewPager);
-        else
-            tabLayout.setupWithViewPager(viewPager);
-
+        tabLayout.setupWithViewPager(viewPager);
         // use class TabLayout.ViewPagerOnTabSelectedListener
         // note that it's a class not an interface as OnTabSelectedListener, so you can't implement it in your activity/fragment
         // methods are optional, so if you don't use them, you can not override them (e.g. onTabUnselected)
@@ -90,34 +83,20 @@ public class LibTab_layout extends Fragment {
 
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if (tab!=null)
-                    super.onTabSelected(tab);
-                else
-                    super.onTabSelected(tab);
+                super.onTabSelected(tab);
             }
         });
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-        try {
+        try {             viewPagerAdapter.addFragment(new Payment_Fragment(), "School Fees");
+                viewPagerAdapter.addFragment(new Event_Payment_Fragment(), "Event Payment");
+                viewPagerAdapter.addFragment(new Other_Payment_Fragment(), "Other Payment");
 
-            if (role_id.contentEquals("5")) {
-                viewPagerAdapter.addFragment(new BookList_Fragment(), "Book List");
-                viewPagerAdapter.addFragment(new AssignBookList_Fragment(), "Assign Book");
-                viewPagerAdapter.addFragment(new ReturnBookList_Fragment(), "Return");
-            } else if (role_id.contentEquals("3")) {
-                viewPagerAdapter.addFragment(new BookList_Fragment(), "Book List");
-                viewPagerAdapter.addFragment(new ReturnBookList_Fragment(), "Assign Book");
-            } else if (role_id.contentEquals("2") || role_id.contentEquals("1")) {
-                viewPagerAdapter.addFragment(new BookList_Fragment(), "Book List");
-                viewPagerAdapter.addFragment(new ReturnBookList_Fragment(), "Assign Book");
-
-            }
         } catch (Exception ex) {
 
         }
-
 
         viewPager.setAdapter(viewPagerAdapter);
     }

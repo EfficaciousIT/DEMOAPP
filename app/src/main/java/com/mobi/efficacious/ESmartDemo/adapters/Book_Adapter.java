@@ -10,21 +10,28 @@ import android.widget.Filterable;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
 import com.mobi.efficacious.ESmartDemo.R;
+import com.mobi.efficacious.ESmartDemo.activity.LibCategoryBooklist_fragment;
 import com.mobi.efficacious.ESmartDemo.dialogbox.Book_Details_dialog;
 import com.mobi.efficacious.ESmartDemo.entity.LibraryDetail;
+import com.mobi.efficacious.ESmartDemo.entity.SubjLibraryDetail;
+import com.mobi.efficacious.ESmartDemo.entity.SubjectDetailLibPojo;
 
-public class Book_Adapter extends RecyclerView.Adapter<Book_Adapter.ViewHolder>  implements Filterable {
-    private ArrayList<LibraryDetail> data;
-    public ArrayList<LibraryDetail> orig;
+public class Book_Adapter extends RecyclerView.Adapter<Book_Adapter.ViewHolder> {
+    private ArrayList<SubjLibraryDetail> data;
+    public ArrayList<SubjLibraryDetail> orig;
     Context mcontext;
-    public Book_Adapter(ArrayList<LibraryDetail> dataList, Context context) {
+    String Standard_id;
+    public Book_Adapter(ArrayList<SubjLibraryDetail> dataList, Context context, String Standard_id) {
         data = dataList;
         mcontext=context;
+        this.Standard_id=Standard_id;
     }
 
     @Override
@@ -39,7 +46,7 @@ public class Book_Adapter extends RecyclerView.Adapter<Book_Adapter.ViewHolder> 
     public void onBindViewHolder(final ViewHolder holder, int position) {
         try
         {
-            holder.book_name.setText(data.get(position).getVchBookDetailsBookName());
+            holder.sub_nametv.setText(data.get(position).getVchBookLanguageName());
         }catch (Exception ex)
         {
 
@@ -48,14 +55,11 @@ public class Book_Adapter extends RecyclerView.Adapter<Book_Adapter.ViewHolder> 
             @Override
             public void onClick(View view) {
                 try {
-                    Intent intent=new Intent(mcontext,Book_Details_dialog.class);
-                    intent.putExtra("AccessionNo",data.get(position).getVchAccessionNo());
-                    intent.putExtra("BookName",data.get(position).getVchBookDetailsBookName());
-                    intent.putExtra("AuthorName",data.get(position).getIntBookAuthorId());
-                    intent.putExtra("Edition",data.get(position).getIntBookEditionId());
-                    intent.putExtra("Language",data.get(position).getIntBookLanguageId());
-                    intent.putExtra("Price",String.valueOf(data.get(position).getIntBookPrice()));
-                   mcontext.startActivity(intent);
+                    Intent intent=new Intent(mcontext, LibCategoryBooklist_fragment.class);
+                    intent.putExtra("inBookLangId",String.valueOf(data.get(position).getIntBookLanguageId()));
+                    intent.putExtra("SubjectName",data.get(position).getVchBookLanguageName());
+                    intent.putExtra("Standard_id",Standard_id);
+                    mcontext.startActivity(intent);
                 } catch (Exception ex) {
 
                 }
@@ -68,48 +72,12 @@ public class Book_Adapter extends RecyclerView.Adapter<Book_Adapter.ViewHolder> 
     public int getItemCount() {
         return data.size();
     }
-    @Override
-    public Filter getFilter() {
-        return new Filter() {
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                final FilterResults oReturn = new FilterResults();
-                final ArrayList<LibraryDetail> results = new ArrayList<LibraryDetail>();
-                if (orig == null)
-                    orig = data;
-                if (constraint != null) {
-                    if (orig != null && orig.size() > 0) {
-                        for (final LibraryDetail g : orig) {
-                            if (g.getVchBookDetailsBookName().toLowerCase()
-                                    .contains(constraint.toString().toLowerCase()))
-                                results.add(g);
-                        }
-                    }
-                    oReturn.values = results;
-                }
-                return oReturn;
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            protected void publishResults(CharSequence constraint,
-                                          FilterResults results) {
-                try {
-                    data = (ArrayList<LibraryDetail>) results.values;
-                    notifyDataSetChanged();
-                } catch (Exception ex) {
-
-                }
-
-            }
-        };
-    }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView book_name;
+        TextView sub_nametv;
         RelativeLayout relativebook;
         public ViewHolder(View itemView) {
             super(itemView);
-            book_name=(TextView)itemView.findViewById(R.id.Book_nametv);
+            sub_nametv=(TextView)itemView.findViewById(R.id.sub_nametv);
             relativebook=(RelativeLayout)itemView.findViewById(R.id.relativebook);
         }
     }

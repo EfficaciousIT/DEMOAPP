@@ -307,4 +307,9 @@ public class StandardDetail {
     public void setVchType(String vchType) {
         VchType = vchType;
     }
+
+    @Override
+    public String toString() {
+        return  vchStandardName;
+    }
 }

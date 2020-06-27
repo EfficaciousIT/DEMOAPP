@@ -28,4 +28,6 @@
     <color name="multiple_image_select_primaryDark">#5564a6</color>
         <color name="multiple_image_select_accent">#5564a6</color>
     <color name="textcardColor">#3f3f3f</color>
+    <color name="light_gray">#F6F6F6</color>
+    <color name="dark_gray">#9A9A99</color>
 </resources>
