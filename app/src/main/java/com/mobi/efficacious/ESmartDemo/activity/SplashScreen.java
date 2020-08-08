@@ -32,6 +32,7 @@ import okhttp3.ResponseBody;
  * Created by Rahul on 25,May,2020
  */
 public class SplashScreen extends AppCompatActivity {
+
     ConnectionDetector cd;
     private static final String PREFRENCES_NAME = "myprefrences";
     SharedPreferences settings;
