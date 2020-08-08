@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TraffordSchool.iml" filepath="$PROJECT_DIR$/.idea/modules/TraffordSchool.iml" group="TraffordSchool" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="TraffordSchool/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mpsdklibrary-release/mpsdklibrary-release.iml" filepath="$PROJECT_DIR$/.idea/modules/mpsdklibrary-release/mpsdklibrary-release.iml" group="TraffordSchool/mpsdklibrary-release" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/xercesImpl-2.6.2-jaxb-1.0.6/xercesImpl-2.6.2-jaxb-1.0.6.iml" filepath="$PROJECT_DIR$/.idea/modules/xercesImpl-2.6.2-jaxb-1.0.6/xercesImpl-2.6.2-jaxb-1.0.6.iml" group="TraffordSchool/xercesImpl-2.6.2-jaxb-1.0.6" />
+    </modules>
+  </component>
+</project>
