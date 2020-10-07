@@ -2,7 +2,6 @@ package com.mobi.efficacious.ESmartDemo.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,18 +12,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.atom.mpsdklibrary.PayActivity;
-import com.fasterxml.jackson.core.util.MinimalPrettyPrinter;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.mobi.efficacious.ESmartDemo.R;
 import com.mobi.efficacious.ESmartDemo.Interface.DataService;
+import com.mobi.efficacious.ESmartDemo.R;
 import com.mobi.efficacious.ESmartDemo.Tab.Payment_tab;
 import com.mobi.efficacious.ESmartDemo.activity.MainActivity;
-import com.mobi.efficacious.ESmartDemo.adapters.MonthlyFeesDetailAdapter;
 import com.mobi.efficacious.ESmartDemo.adapters.Unpaid_FeeListAdapter;
 import com.mobi.efficacious.ESmartDemo.common.ConnectionDetector;
 import com.mobi.efficacious.ESmartDemo.entity.MonthFeeDetailsResponse;
@@ -33,7 +33,6 @@ import com.mobi.efficacious.ESmartDemo.entity.SupportDetailResponse;
 import com.mobi.efficacious.ESmartDemo.entity.UnPaidFeeListResponse;
 import com.mobi.efficacious.ESmartDemo.webApi.RetrofitInstance;
 
-import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,47 +43,39 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-
-public class Payment_Fragment extends Fragment {
-    private static final String PREFRENCES_NAME = "myprefrences";
-    String CurrDateTime;
-    List<UnPaidFeeListResponse.MonthWiseFee> MonthFeeList = new ArrayList();
-    String Schooli_id;
-    String StudentID_Number;
-    String Year_id;
-    AlertDialog alertDialog;
-    TextView btnSubmit;
-
-    /* renamed from: cd */
-    ConnectionDetector f289cd;
-    String intDivision_id;
-    String intStandard_id;
-    TextView mail_tv;
-    String message = "";
-    List<MonthFeeDetailsResponse.MonthFeeDetail> monthFeeDetails = new ArrayList();
+/**
+ * Created by Rahul on 15,September,2020
+ */
+public class OnlinePaymentDetails extends Fragment {
     View mview;
-    TextView phoneTv;
-    /* access modifiers changed from: private */
-    public ProgressDialog progress;
     RecyclerView recyclerview;
-    String role_id;
-    SharedPreferences settings;
-    String strFeeTotal = "0";
-    String strMonth = "";
-    String strMonthSelected = "";
-    String strRollNo = "";
-    String strRupee = "₹";
-    List<UnPaidFeeListResponse.MonthWiseFee> taskListDataList = new ArrayList();
-    TextView timingtv;
     TextView ttamount;
+    TextView btnSubmit;
+    TextView phoneTv;
+    TextView mail_tv;
+    TextView timingtv;
+    ConnectionDetector cd;
+    private static final String PREFRENCES_NAME = "myprefrences";
+    SharedPreferences settings;
+    String Year_id, Schooli_id;
+    String userid, role_id, StudentID_Number, intStandard_id, intDivision_id;
+    private ProgressDialog progress;
     Unpaid_FeeListAdapter unpaid_feeListAdapter;
-    String userid;
-    String strTransactionId="";
+    List<UnPaidFeeListResponse.MonthWiseFee> taskListDataList = new ArrayList<>();
+    List<UnPaidFeeListResponse.MonthWiseFee> MonthFeeList = new ArrayList<>();
+    List<MonthFeeDetailsResponse.MonthFeeDetail> monthFeeDetails = new ArrayList<>();
+    String strFeeTotal = "0", strRupee = "₹";
+    androidx.appcompat.app.AlertDialog alertDialog;
+    String CurrDateTime;
+    String message = "";
+    String strMonth = "";
+    String strRollNo = "";
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View inflate = inflater.inflate(R.layout.fragment_payment, (ViewGroup) null);
-       mview = inflate;
-        recyclerview = (RecyclerView) inflate.findViewById(R.id.recyclerview);
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        mview = inflater.inflate(R.layout.fragment_payment, null);
+        recyclerview = (RecyclerView) mview.findViewById(R.id.recyclerview);
         ttamount = (TextView) mview.findViewById(R.id.ttamount);
         btnSubmit = (TextView) mview.findViewById(R.id.btnSubmit);
         phoneTv = (TextView) mview.findViewById(R.id.phoneTv);
@@ -95,47 +86,41 @@ public class Payment_Fragment extends Fragment {
         role_id = settings.getString("TAG_USERTYPEID", "");
         userid = settings.getString("TAG_USERID", "");
         Year_id = settings.getString("TAG_ACADEMIC_ID", "");
-     StudentID_Number = settings.getString("TAG_StudentID_Number", "");
-       strRollNo = settings.getString("TAG_RollNO", "");
-        ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progress = progressDialog;
-        progressDialog.setCancelable(false);
+        StudentID_Number = settings.getString("TAG_StudentID_Number", "");
+        strRollNo = settings.getString("TAG_RollNO", "");
+        progress = new ProgressDialog(getActivity());
+        progress.setCancelable(false);
         progress.setCanceledOnTouchOutside(false);
         progress.setMessage("loading...");
-        try {
-            if (getArguments() != null) {
-                strMonthSelected = getArguments().getString("MonthSelected");
-            } else {
-                strMonthSelected = "";
-            }
-        } catch (Exception e) {
-            strMonthSelected = "";
-        }
-        f289cd = new ConnectionDetector(getContext().getApplicationContext());
+        cd = new ConnectionDetector(getContext().getApplicationContext());
         if (role_id.contentEquals("2") || role_id.contentEquals("1")) {
-            if (!f289cd.isConnectingToInternet()) {
+            if (!cd.isConnectingToInternet()) {
                 AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-                alert.setMessage((CharSequence) "No Internet Connection");
-                alert.setPositiveButton((CharSequence) "OK", (DialogInterface.OnClickListener) null);
+                alert.setMessage("No Internet Connection");
+                alert.setPositiveButton("OK", null);
                 alert.show();
             } else {
                 try {
                     intStandard_id = settings.getString("TAG_STANDERDID", "");
                     intDivision_id = settings.getString("TAG_DIVISIONID", "");
-                } catch (Exception e2) {
+                } catch (Exception ex) {
+
                 }
+
             }
         }
         btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
                 for (int i = 0; i < MonthFeeList.size(); i++) {
                     if (MonthFeeList.get(i).isSelected()) {
                         if (strMonth.contentEquals("")) {
-                        strMonth = MonthFeeList.get(i).getMonth();
+                            strMonth = MonthFeeList.get(i).getMonth();
                         } else {
-
-                           strMonth = strMonth + "," + MonthFeeList.get(i).getMonth();
+                            strMonth = strMonth + "," + MonthFeeList.get(i).getMonth();
                         }
+                    } else {
+
                     }
                 }
                 if (!strMonth.contentEquals("")) {
@@ -150,81 +135,97 @@ public class Payment_Fragment extends Fragment {
 
     public void EventAsync() {
         try {
-            ((DataService) RetrofitInstance.getRetrofitInstance().create(DataService.class)).getUnpaidFeeList("MonthWiseTotalFee", StudentID_Number, intStandard_id, userid, Year_id, Schooli_id).
-                    subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<UnPaidFeeListResponse>() {
+            String command = "MonthWiseTotalFee";
+
+            DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
+            Observable<UnPaidFeeListResponse> call = service.getUnpaidFeeList(command, StudentID_Number, intStandard_id, userid, Year_id, Schooli_id);
+            // Observable<UnPaidFeeListResponse> call = service.getUnpaidFeeList(command,"20200307","3","1808","2","1");
+            call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<UnPaidFeeListResponse>() {
+                @Override
                 public void onSubscribe(Disposable disposable) {
                     progress.show();
                 }
 
+                @Override
                 public void onNext(UnPaidFeeListResponse body) {
                     try {
                         MonthFeeList = body.getMonthWiseFee();
                         taskListDataList = body.getMonthWiseFee();
                         generateEventDetail();
-                    } catch (Exception e) {
+                    } catch (Exception ex) {
                         progress.dismiss();
                         Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
+                @Override
                 public void onError(Throwable t) {
                     progress.dismiss();
                     Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
+
                 }
 
+                @Override
                 public void onComplete() {
                     progress.dismiss();
                 }
             });
-        } catch (Exception e) {
+        } catch (Exception ex) {
             progress.dismiss();
         }
     }
 
     public void generateEventDetail() {
         try {
-            if (taskListDataList != null && !taskListDataList.isEmpty()) {
-                unpaid_feeListAdapter = new Unpaid_FeeListAdapter(getContext(), taskListDataList, strMonthSelected);
-                recyclerview.setLayoutManager(new LinearLayoutManager(getActivity()));
+            if ((taskListDataList != null && !taskListDataList.isEmpty())) {
+//                unpaid_feeListAdapter = new Unpaid_FeeListAdapter(getContext(), taskListDataList);
+                RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                recyclerview.setLayoutManager(layoutManager);
                 recyclerview.setAdapter(unpaid_feeListAdapter);
                 unpaid_feeListAdapter.setOnClickListener(new Unpaid_FeeListAdapter.FeeDataClick() {
+                    @Override
                     public void onFeeClick(int position, String amount, boolean isChecked) {
                         Log.e("SelectedMonth", taskListDataList.get(position).getMonth());
                         setFeeTotalCalc(position, amount, isChecked);
                     }
 
+                    @Override
                     public void onFeeClick(int position, String month) {
                         getMonthyFeeDetails(taskListDataList.get(position).getMonth());
+
                     }
                 });
+            } else {
+
             }
-        } catch (Exception e) {
+
+        } catch (Exception ex) {
             progress.dismiss();
             Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /* access modifiers changed from: private */
-    public void onFeeDetailDialog(List<MonthFeeDetailsResponse.MonthFeeDetail> monthFeeDetails2) {
-        List<MonthFeeDetailsResponse.MonthFeeDetail> list = monthFeeDetails2;
+    private void onFeeDetailDialog(List<MonthFeeDetailsResponse.MonthFeeDetail> monthFeeDetails) {
         try {
-            AlertDialog.Builder dilaog = new AlertDialog.Builder(getContext(), R.style.CustomDialogs);
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.monthly_feedetail, (ViewGroup) null);
+            final androidx.appcompat.app.AlertDialog.Builder dilaog =
+                    new androidx.appcompat.app.AlertDialog.Builder(getContext(), R.style.CustomDialogs);
+            LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+            final View view = layoutInflater.inflate(R.layout.monthly_feedetail, null);
             dilaog.setView(view);
             alertDialog = dilaog.create();
+            TextView name_tv = (TextView) view.findViewById(R.id.title);
             TextView ttamount_tv = (TextView) view.findViewById(R.id.ttamount_tv);
-            RecyclerView recyclerview2 = (RecyclerView) view.findViewById(R.id.recyclerview);
-            MonthlyFeesDetailAdapter monthlyFeesDetailAdapter = new MonthlyFeesDetailAdapter(getContext(), list);
-            recyclerview2.setLayoutManager(new LinearLayoutManager(getActivity()));
-            recyclerview2.setAdapter(monthlyFeesDetailAdapter);
+            TextView tution_fee = (TextView) view.findViewById(R.id.tution_fee);
+            TextView late_fee = (TextView) view.findViewById(R.id.late_fee);
+            TextView ConcessionAmt_fee = (TextView) view.findViewById(R.id.ConcessionAmt_fee);
             ImageView close_img = (ImageView) view.findViewById(R.id.close_img);
-            ((TextView) view.findViewById(R.id.title)).setText("Fee Details");
-            double TotalAmount = FirebaseRemoteConfig.DEFAULT_VALUE_FOR_DOUBLE;
-            for (int i = 0; i < monthFeeDetails2.size(); i++) {
-                TotalAmount += Double.parseDouble(list.get(i).getNetAmt());
-            }
-            ttamount_tv.setText("₹" + String.format("%.2f", new Object[]{Double.valueOf(TotalAmount)}));
+            name_tv.setText("Fee Details");
+            ttamount_tv.setText("₹"+monthFeeDetails.get(0).getNetAmt().toString());
+            tution_fee.setText("₹"+monthFeeDetails.get(0).getVchfee().toString());
+            late_fee.setText("₹"+monthFeeDetails.get(0).getLateFee().toString());
+            ConcessionAmt_fee.setText("₹"+monthFeeDetails.get(0).getConcessionAmt().toString());
             close_img.setOnClickListener(new View.OnClickListener() {
+                @Override
                 public void onClick(View v) {
                     alertDialog.dismiss();
                 }
@@ -235,109 +236,142 @@ public class Payment_Fragment extends Fragment {
         } catch (Exception e) {
             e.getMessage();
         }
+
     }
 
     public void getMonthyFeeDetails(String month) {
         try {
-            ((DataService) RetrofitInstance.getRetrofitInstance().create(DataService.class)).getMonthlyDetailFeeList("MonthFeeDetailsStatus", StudentID_Number, intStandard_id, userid, Year_id, Schooli_id, intDivision_id, month).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<MonthFeeDetailsResponse>() {
+            String command = "MonthFeeDetailsStatus";
+
+            DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
+            Observable<MonthFeeDetailsResponse> call = service.getMonthlyDetailFeeList(command, StudentID_Number, intStandard_id, userid, Year_id, Schooli_id, intDivision_id, month);
+            // Observable<UnPaidFeeListResponse> call = service.getUnpaidFeeList(command,"20200307","3","1808","2","1");
+            call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<MonthFeeDetailsResponse>() {
+                @Override
                 public void onSubscribe(Disposable disposable) {
                     progress.show();
                 }
 
+                @Override
                 public void onNext(MonthFeeDetailsResponse body) {
                     try {
                         monthFeeDetails = body.getMonthFeeDetails();
                         if (monthFeeDetails.size() > 0) {
                             onFeeDetailDialog(monthFeeDetails);
                         }
-                    } catch (Exception e) {
+
+                    } catch (Exception ex) {
                         progress.dismiss();
                         Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
+                @Override
                 public void onError(Throwable t) {
                     progress.dismiss();
                     Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
+
                 }
 
+                @Override
                 public void onComplete() {
                     progress.dismiss();
-                    monthFeeDetails.size();
+                    if (monthFeeDetails.size() > 0) {
+
+                    } else {
+                        // Toast.makeText(getActivity(), "No data available", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
-        } catch (Exception e) {
+        } catch (Exception ex) {
             progress.dismiss();
         }
     }
 
-    /* access modifiers changed from: private */
-    public void setFeeTotalCalc(int position, String amount, boolean isChecked) {
+    private void setFeeTotalCalc(int position, String amount, boolean isChecked) {
+        double Mamount;
         MonthFeeList.get(position).setSelected(isChecked);
         if (strFeeTotal.contentEquals("0")) {
-            if (isChecked) {
-                strFeeTotal = String.valueOf(roundTwoDecimals(Double.parseDouble(amount)));
+            if (isChecked == true) {
+                Mamount = roundTwoDecimals(Double.parseDouble(amount));
+                strFeeTotal = String.valueOf(Mamount);
             }
-        } else if (isChecked) {
-            strFeeTotal = String.valueOf(roundTwoDecimals(Double.parseDouble(strFeeTotal)) + roundTwoDecimals(Double.parseDouble(amount)));
+
         } else {
-            strFeeTotal = String.valueOf(roundTwoDecimals(Double.parseDouble(strFeeTotal)) - roundTwoDecimals(Double.parseDouble(amount)));
+            if (isChecked == true) {
+                Mamount = roundTwoDecimals(Double.parseDouble(strFeeTotal)) + roundTwoDecimals(Double.parseDouble(amount));
+                strFeeTotal = String.valueOf(Mamount);
+            } else {
+                Mamount = roundTwoDecimals(Double.parseDouble(strFeeTotal)) - roundTwoDecimals(Double.parseDouble(amount));
+                strFeeTotal = String.valueOf(Mamount);
+            }
+
         }
-        TextView textView = ttamount;
-        textView.setText(strRupee + strFeeTotal);
+        ttamount.setText(strRupee + strFeeTotal);
     }
 
     public double roundTwoDecimals(double d) {
-        return Double.valueOf(new DecimalFormat("#.##").format(d)).doubleValue();
+        DecimalFormat twoDForm = new DecimalFormat("#.##");
+        return Double.valueOf(twoDForm.format(d));
     }
 
     public void getSupportDetails() {
         try {
-            ((DataService) RetrofitInstance.getRetrofitInstance().create(DataService.class)).getSupport("select", Schooli_id).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<SupportDetailResponse>() {
+            String command = "select";
+
+            DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
+            Observable<SupportDetailResponse> call = service.getSupport(command, Schooli_id);
+            call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<SupportDetailResponse>() {
+                @Override
                 public void onSubscribe(Disposable disposable) {
                     progress.show();
                 }
 
+                @Override
                 public void onNext(SupportDetailResponse body) {
                     try {
                         phoneTv.setText(body.getAPKVersion().get(0).getPhoneNumber());
                         mail_tv.setText(body.getAPKVersion().get(0).getEmailID());
-                        TextView textView = timingtv;
-                        textView.setText("TIMING: " + body.getAPKVersion().get(0).getFromTime() + " To " + body.getAPKVersion().get(0).getToTime());
-                    } catch (Exception e) {
+                        timingtv.setText("TIMING: " + body.getAPKVersion().get(0).getFromTime() + " To " + body.getAPKVersion().get(0).getToTime());
+
+                    } catch (Exception ex) {
                         progress.dismiss();
                         Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
                     }
                 }
 
+                @Override
                 public void onError(Throwable t) {
                     progress.dismiss();
                     Toast.makeText(getActivity(), "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
+
                 }
 
+                @Override
                 public void onComplete() {
                     progress.dismiss();
-                    monthFeeDetails.size();
+                    if (monthFeeDetails.size() > 0) {
+
+                    } else {
+                        //Toast.makeText(getActivity(), "No data available", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
-        } catch (Exception e) {
+        } catch (Exception ex) {
             progress.dismiss();
         }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && data != null) {
-            message = data.getStringExtra("status");
-            String[] resKey = data.getStringArrayExtra("responseKeyArray");
-            String[] resValue = data.getStringArrayExtra("responseValueArray");
-            if (!(resKey == null || resValue == null)) {
-                for (int i = 0; i < resKey.length; i++) {
-                    PrintStream printStream = System.out;
-                    printStream.println(MinimalPrettyPrinter.DEFAULT_ROOT_VALUE_SEPARATOR + i + " resKey : " + resKey[i] + " resValue : " + resValue[i]);
-                    if(resKey[i].contentEquals("ipg_txn_id")){
-                        strTransactionId=resValue[i];
-                    }
+        if (requestCode == 1) {
+            if (data != null) {
+                message = data.getStringExtra("status");
+                String[] resKey = data.getStringArrayExtra("responseKeyArray");
+                String[] resValue = data.getStringArrayExtra("responseValueArray");
+                if (resKey != null && resValue != null) {
+                    for (int i = 0; i < resKey.length; i++)
+                        System.out.println(" " + i + " resKey : " + resKey[i] + " resValue : " + resValue[i]);
                 }
             }
         }
@@ -347,17 +381,17 @@ public class Payment_Fragment extends Fragment {
     public void Transactiondata() {
         if (message.contentEquals("Transaction Successful!")) {
             InsertPaymentDetails();
-            return;
+        } else {
+            AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+            alert.setMessage(message);
+            alert.setPositiveButton("OK", null);
+            alert.show();
         }
-        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
-        alert.setMessage((CharSequence) message);
-        alert.setPositiveButton((CharSequence) "OK", (DialogInterface.OnClickListener) null);
-        alert.show();
     }
 
     public void onPay() {
-       String vchAccountholder_name = settings.getString("TAG_vchAccountholder_name", "");
-     String   vchBankAc_no = settings.getString("TAG_vchBankAc_no", "");
+        String vchAccountholder_name = settings.getString("TAG_vchAccountholder_name", "");
+        String   vchBankAc_no = settings.getString("TAG_vchBankAc_no", "");
         Intent newPayIntent = new Intent(getActivity(), PayActivity.class);
         newPayIntent.putExtra("merchantId", "197");
         newPayIntent.putExtra("txnscamt", "0");
@@ -429,7 +463,7 @@ public class Payment_Fragment extends Fragment {
                 public void onComplete() {
                     progress.dismiss();
                     if (strMessage[0].contentEquals("Sussess")) {
-                      //  Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
 
                     } else {
                         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
@@ -443,17 +477,23 @@ public class Payment_Fragment extends Fragment {
     }
     public void InserttDetails(String feedid) {
         try {
+            String id="";
             final String[] strMessage = {""};
             String command = "UpdateTransactionID";
-
+            if(StudentID_Number!=null){
+                id=StudentID_Number;
+            }else {
+                id=userid;
+            }
             DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
-            Observable<PaymentSuccessResponse> call = service.insertPayentDetails(command,feedid,userid,strTransactionId);
+            Observable<PaymentSuccessResponse> call = service.insertPayentDetails(command,feedid,feedid,feedid);
             call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<PaymentSuccessResponse>() {
                 @Override
                 public void onSubscribe(Disposable disposable) {
                     progress.show();
                 }
 
+                @Override
                 public void onNext(PaymentSuccessResponse body) {
                     try {
                         strMessage[0] = body.getPayFeeDetails().get(0).getStatus().toString();
@@ -471,6 +511,7 @@ public class Payment_Fragment extends Fragment {
 
                 }
 
+                @Override
                 public void onComplete() {
                     progress.dismiss();
                     if (strMessage[0].contentEquals("Sussess")) {

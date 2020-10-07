@@ -49,9 +49,9 @@
             android:padding="@dimen/_8sdp"
             android:textSize="@dimen/_14sdp"
             android:layout_marginEnd="@dimen/_6sdp"
-            android:background="@drawable/fee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:background="@drawable/invoice"
+            android:layout_width="@dimen/_20sdp"
+            android:layout_height="@dimen/_20sdp"/>
     </RelativeLayout>
 </LinearLayout>
 </LinearLayout>

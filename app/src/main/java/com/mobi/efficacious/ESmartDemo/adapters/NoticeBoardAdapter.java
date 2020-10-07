@@ -44,11 +44,11 @@ public class NoticeBoardAdapter extends RecyclerView.Adapter<NoticeBoardAdapter.
             holder.Lastdate.setTextColor(Color.RED);
             holder.Issuedate.setText(data.get(position).getIssueDate().toString());
             holder.Lastdate.setText(data.get(position).getEndDate().toString());
-//            holder.Notice.setText(data.get(position).getNotice().toString());
-//            Linkify.addLinks(holder.Notice, Linkify.WEB_URLS);
-//            holder.Notice.setLinkTextColor(ContextCompat.getColor(mcontext,
-//                    R.color.caldroid_holo_blue_dark));
-            holder.Notice.setText("Notice:"+ data.get(position).getNotice().toString());
+            holder.Notice.setText(data.get(position).getNotice().toString());
+            Linkify.addLinks(holder.Notice, Linkify.WEB_URLS);
+            holder.Notice.setLinkTextColor(ContextCompat.getColor(mcontext,
+                    R.color.caldroid_holo_blue_dark));
+          //  holder.Notice.setText("Notice:"+ data.get(position).getNotice().toString());
             holder.Subject.setText("Subject:"+data.get(position).getSubject().toString());
         }catch (Exception ex)
         {

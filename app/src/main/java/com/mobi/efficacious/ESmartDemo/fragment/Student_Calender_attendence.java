@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.mobi.efficacious.ESmartDemo.activity.MainActivity;
 import com.roomorama.caldroid.CaldroidFragment;
 
 import java.text.ParseException;
@@ -32,7 +33,7 @@ import com.mobi.efficacious.ESmartDemo.Interface.DataService;
 import com.mobi.efficacious.ESmartDemo.R;
 import com.mobi.efficacious.ESmartDemo.Tab.Attendence_sliding_tab;
 import com.mobi.efficacious.ESmartDemo.Tab.StudentAttendanceActivity;
-import com.mobi.efficacious.ESmartDemo.activity.MainActivity;
+
 import com.mobi.efficacious.ESmartDemo.adapters.StandardAdapter;
 import com.mobi.efficacious.ESmartDemo.dialogbox.Image_zoom_dialog_student;
 import com.mobi.efficacious.ESmartDemo.entity.AttendanceDetail;

@@ -26,6 +26,18 @@ public class PaymentSuccessResponse {
         @Expose
         private String status;
 
+        public String getFeeId() {
+            return FeeId;
+        }
+
+        public void setFeeId(String feeId) {
+            FeeId = feeId;
+        }
+
+        @SerializedName("FeeId")
+        @Expose
+        private String FeeId;
+
         public String getStatus() {
             return status;
         }

@@ -3,6 +3,7 @@ package com.mobi.efficacious.ESmartDemo.Interface;
 
 import com.mobi.efficacious.ESmartDemo.entity.AssignBookDetailLibPojo;
 import com.mobi.efficacious.ESmartDemo.entity.AttendanceDetailPojo;
+import com.mobi.efficacious.ESmartDemo.entity.BamkDetailResponse;
 import com.mobi.efficacious.ESmartDemo.entity.BookDetailLibPojo;
 import com.mobi.efficacious.ESmartDemo.entity.CategoryDetailLibPojo;
 import com.mobi.efficacious.ESmartDemo.entity.ChatDetail;
@@ -21,6 +22,7 @@ import com.mobi.efficacious.ESmartDemo.entity.NoticeboardDetail;
 import com.mobi.efficacious.ESmartDemo.entity.OnlineClassDetailPojo;
 import com.mobi.efficacious.ESmartDemo.entity.OnlineClassDetailsPojo;
 import com.mobi.efficacious.ESmartDemo.entity.OnlineClassTimetablePojo;
+import com.mobi.efficacious.ESmartDemo.entity.PaymentHistoryResponse;
 import com.mobi.efficacious.ESmartDemo.entity.PaymentSuccessResponse;
 import com.mobi.efficacious.ESmartDemo.entity.ProfileDetailsPojo;
 import com.mobi.efficacious.ESmartDemo.entity.SchoolDetailsPojo;
@@ -375,25 +377,11 @@ public interface DataService {
                                                                         @Query("dtAssigned_Date") String dtAssigned_Date,
                                                                         @Query("dtReturn_date") String dtReturn_date);
 
-    @GET("SchoolFeeDetails")
-    Observable<UnPaidFeeListResponse> getUnpaidFeeList(@Query("command") String command,
-                                                                    @Query("intStudentID_Number") String intStudentID_Number,
-                                                                    @Query("intstandard_id") String intstandard_id,
-                                                                    @Query("intStudentID") String intStudentID,
-                                                                    @Query("intAcademic_id") String intAcademic_id,
-                                                                    @Query("intSchool_id") String intSchool_id
-    );
 
     @GET("SchoolFeeDetails")
-    Observable<MonthFeeDetailsResponse> getMonthlyDetailFeeList(@Query("command") String command,
-                                                                @Query("intStudentID_Number") String intStudentID_Number,
-                                                                @Query("intstandard_id") String intstandard_id,
-                                                                @Query("intStudentID") String intStudentID,
-                                                                @Query("intAcademic_id") String intAcademic_id,
-                                                                @Query("intSchool_id") String intSchool_id,
-                                                                @Query("intDivision_id") String intDivision_id,
-                                                                @Query("Month") String Month
-    );
+    Observable<UnPaidFeeListResponse> getUnpaidFeeList(@Query("command") String str, @Query("intStudentID_Number") String str2, @Query("intstandard_id") String str3, @Query("intStudentID") String str4, @Query("intAcademic_id") String str5, @Query("intSchool_id") String str6);
+    @GET("SchoolFeeDetails")
+    Observable<MonthFeeDetailsResponse> getMonthlyDetailFeeList(@Query("command") String str, @Query("intStudentID_Number") String str2, @Query("intstandard_id") String str3, @Query("intStudentID") String str4, @Query("intAcademic_id") String str5, @Query("intSchool_id") String str6, @Query("intDivision_id") String str7, @Query("Month") String str8);
     @GET("Support")
     Observable<SupportDetailResponse> getSupport(@Query("command") String command,
                                                  @Query("intSchool_id") String intSchool_id );
@@ -407,4 +395,18 @@ public interface DataService {
                                                            @Query("month") String month,
                                                            @Query("intRoll_no") String intRoll_no,
                                                            @Query("intDivision_id") String intDivision_id);
+
+    //Login
+    @GET("BankMaster")
+    Observable<BamkDetailResponse> getBankDetails(@Query("command") String command,
+                                                  @Query("intSchool_id") String intSchool_id);
+
+    @POST("SchoolFeeDetails")
+    Observable<PaymentSuccessResponse> insertPayentDetails(@Query("command") String command,
+                                                           @Query("feeId") String feeId,
+                                                           @Query("intStudentId") String intStudentId,
+                                                           @Query("trasactionId") String trasactionId);
+    @GET("SchoolFeeDetails")
+    Observable<PaymentHistoryResponse> getUnpaidPainFeeList(@Query("command") String str, @Query("intStudentID_Number") String str2, @Query("intstandard_id") String str3, @Query("intStudentID") String str4, @Query("intAcademic_id") String str5, @Query("intSchool_id") String str6, @Query("intDivision_id") String str7);
+
 }

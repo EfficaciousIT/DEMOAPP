@@ -1,5 +1,6 @@
 package com.mobi.efficacious.ESmartDemo.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +26,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.navigation.NavigationView;
 import com.infideap.drawerbehavior.Advance3DDrawerLayout;
+import com.mobi.efficacious.ESmartDemo.Interface.DataService;
 import com.mobi.efficacious.ESmartDemo.R;
 import com.mobi.efficacious.ESmartDemo.Tab.AdminApproval_Tab;
 import com.mobi.efficacious.ESmartDemo.Tab.Attendence_sliding_tab;
@@ -32,12 +34,15 @@ import com.mobi.efficacious.ESmartDemo.Tab.Chating_Sliding_Tab;
 import com.mobi.efficacious.ESmartDemo.Tab.DailyDiary_Tab;
 import com.mobi.efficacious.ESmartDemo.Tab.Event_Tab;
 import com.mobi.efficacious.ESmartDemo.Tab.LibTab_layout;
+import com.mobi.efficacious.ESmartDemo.Tab.PaymentDetailTab;
 import com.mobi.efficacious.ESmartDemo.Tab.Payment_tab;
 import com.mobi.efficacious.ESmartDemo.Tab.StudentAttendanceActivity;
 import com.mobi.efficacious.ESmartDemo.Tab.TimetableActivity_student;
 import com.mobi.efficacious.ESmartDemo.Tab.TimetableActivity_teacher;
 import com.mobi.efficacious.ESmartDemo.Tab.Timetable_sliding_tab;
 import com.mobi.efficacious.ESmartDemo.common.ConnectionDetector;
+import com.mobi.efficacious.ESmartDemo.entity.BamkDetailResponse;
+import com.mobi.efficacious.ESmartDemo.entity.LoginDetail;
 import com.mobi.efficacious.ESmartDemo.fragment.Admin_Dashboard;
 import com.mobi.efficacious.ESmartDemo.fragment.All_Standard_Book;
 import com.mobi.efficacious.ESmartDemo.fragment.DailyDiaryListFragment;
@@ -59,11 +64,18 @@ import com.mobi.efficacious.ESmartDemo.fragment.StudentChangePassword;
 import com.mobi.efficacious.ESmartDemo.fragment.StudentExamFragment;
 import com.mobi.efficacious.ESmartDemo.fragment.StudentSyllabusFragment;
 import com.mobi.efficacious.ESmartDemo.fragment.Student_Std_Fragment;
+import com.mobi.efficacious.ESmartDemo.webApi.RetrofitInstance;
 
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String PREFRENCES_NAME = "myprefrences";
@@ -102,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             user_id = settings.getString("TAG_USERID", "");
             academic_id = settings.getString("TAG_ACADEMIC_ID", "");
             school_id = settings.getString("TAG_SCHOOL_ID", "");
+            getBankDetail();
         } catch (Exception ex) {
 
         }
@@ -151,6 +164,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 staff.setVisible(false);
                 MenuItem result = menu.findItem(R.id.nav_Result);
                 result.setVisible(true);
+
+MenuItem payment = menu.findItem(R.id.nav_payment_detail);
+                payment.setVisible(true);
+MenuItem paymment = menu.findItem(R.id.nav_payment);
+                paymment.setVisible(true);
 
                 MenuItem online_timetable = menu.findItem(R.id.nav_online_timetable);
                 online_timetable.setVisible(true);
@@ -208,6 +226,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     MenuItem online_classes = menu.findItem(R.id.nav_online_classes);
                     online_classes.setVisible(true);
 
+                    MenuItem paymment = menu.findItem(R.id.nav_payment_detail);
+                    paymment.setVisible(false);
                     if (!cd.isConnectingToInternet()) {
                         AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                         alert.setMessage("No Internet Connection");
@@ -259,6 +279,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 online_timetable.setVisible(false);
                 MenuItem online_classes = menu.findItem(R.id.nav_online_classes);
                 online_classes.setVisible(false);
+                MenuItem paymment = menu.findItem(R.id.nav_payment_detail);
+                paymment.setVisible(false);
                 if (!cd.isConnectingToInternet()) {
                     AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
                     alert.setMessage("No Internet Connection");
@@ -284,7 +306,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 MenuItem target1;
                 target1 = menu.findItem(R.id.nav_library);
                 target1.setVisible(true);
-
+                MenuItem paymment = menu.findItem(R.id.nav_payment_detail);
+                paymment.setVisible(false);
                 MenuItem online_timetable = menu.findItem(R.id.nav_online_timetable);
                 online_timetable.setVisible(true);
                 MenuItem online_classes = menu.findItem(R.id.nav_online_classes);
@@ -1083,6 +1106,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         student_std_activity.setArguments(args);
                         MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, student_std_activity).commitAllowingStateLoss();
 
+                    }else if (id == R.id.nav_payment_detail) {
+                        title = "Payment History";
+                        PaymentDetailTab student_std_activity = new PaymentDetailTab();
+                        Bundle args = new Bundle();
+                        args.putString("pagename", "Payment");
+                        student_std_activity.setArguments(args);
+                        MainActivity.fragmentManager.beginTransaction().replace(R.id.content_main, student_std_activity).commitAllowingStateLoss();
+
                     } else if (id == R.id.nav_Homework) {
                         try {
                             title = "Home Work";
@@ -1250,6 +1281,49 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    public void getBankDetail() {
+        try {
+             ProgressDialog progressBar;
+            progressBar = new ProgressDialog(MainActivity.this);
+            progressBar.setCancelable(false);
+            progressBar.setCanceledOnTouchOutside(false);
+            progressBar.setMessage("loading...");
+            DataService service = RetrofitInstance.getRetrofitInstance().create(DataService.class);
+            Observable<BamkDetailResponse> call = service.getBankDetails("select",school_id);
+            call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<BamkDetailResponse>() {
+                @Override
+                public void onSubscribe(Disposable disposable) {
+                    progressBar.show();
+                }
+                @Override
+                public void onNext(BamkDetailResponse body) {
+                    try {
+                        settings.edit().putString("TAG_vchBank_name", body.getAPKVersion().get(0).getVchBankName()).commit();
+                        settings.edit().putString("TAG_vchIFSC", body.getAPKVersion().get(0).getVchIFSC()).commit();
+                        settings.edit().putString("TAG_vchBankAc_no", body.getAPKVersion().get(0).getVchBankAcNo()).commit();
+                        settings.edit().putString("TAG_vchAccountholder_name", body.getAPKVersion().get(0).getVchAccountholderName()).commit();
+                    } catch (Exception ex) {
+                        progressBar.dismiss();
+                        Toast.makeText(MainActivity.this, "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
+                    }
+                }
 
+                @Override
+                public void onError(Throwable t) {
+                    progressBar.dismiss();
+                    Toast.makeText(MainActivity.this, "Response taking time seems Network issue!", Toast.LENGTH_SHORT).show();
+
+                }
+
+                @Override
+                public void onComplete() {
+                    progressBar.dismiss();
+
+                }
+            });
+        } catch (Exception ex) {
+
+        }
+    }
 }
 

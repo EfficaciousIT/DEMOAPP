@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,8 +54,9 @@ public class Profile extends Fragment {
             fatherNametv, MotherNametv, addresstv, tv_number, txt_state,txt_annualtotalfees, outstanding_tv, annualToatal_tv,
             transport_total_fees_tv, transport_paidfess_tv, transport_osFees_tv,
             monthly_total_tv, monthly_paid_tv, monthly_os_tv, photo_os_tv, exam_os_tv, tution_os_tv, transport_os_tv,
-            total_osfees_tv;
+            total_osfees_tv,id_tv,roll_tv;
 
+    LinearLayout roll_linear;
     String Schooli_id, role_id, academic_id, UserId,teachername;
     private ProgressDialog progress, progress1;
     String refreshedToken, Teacher_statndard, Teacher_division;
@@ -113,6 +115,9 @@ public class Profile extends Fragment {
         ProfileImage = myview.findViewById(R.id.profile_image_view);
         image_edit = myview.findViewById(R.id.imageViewedit);
         txt_state = myview.findViewById(R.id.profile_state);
+        id_tv = myview.findViewById(R.id.id_tv);
+        roll_tv = myview.findViewById(R.id.roll_tv);
+        roll_linear = myview.findViewById(R.id.roll_linear);
 
 
         image_edit.setOnClickListener(v -> {
@@ -232,8 +237,11 @@ public class Profile extends Fragment {
                     fatherNametv.setText(taskListDataList.get(0).getVchFatherNAme());
                     MotherNametv.setText(taskListDataList.get(0).getVchMotherNAme());
                     tv_number.setText(taskListDataList.get(0).getIntMobileNo());
-//                    txt_state.setText(taskListDataList.get(0).getS());
 
+                    id_tv.setText("Student ID:"+taskListDataList.get(0).getIntUserid());
+                    roll_tv.setText(taskListDataList.get(0).getIntRollNO());
+//                    txt_state.setText(taskListDataList.get(0).getS());
+                    roll_linear.setVisibility(View.VISIBLE);
                     StdName.setVisibility(View.VISIBLE);
 
                     fatherNametv.setVisibility(View.VISIBLE);
@@ -241,6 +249,7 @@ public class Profile extends Fragment {
 
 
                 } else {
+                    roll_linear.setVisibility(View.GONE);
                     MotherNametv.setVisibility(View.GONE);
                     fatherNametv.setVisibility(View.GONE);
 

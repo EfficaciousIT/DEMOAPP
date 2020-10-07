@@ -42,7 +42,7 @@ public class MonthFeeDetailsResponse {
         private String concessionAmt;
         @SerializedName("NetAmt")
         @Expose
-        private Integer netAmt;
+        private String netAmt;
         @SerializedName("feestartdate")
         @Expose
         private String feestartdate;
@@ -95,11 +95,11 @@ public class MonthFeeDetailsResponse {
             this.concessionAmt = concessionAmt;
         }
 
-        public Integer getNetAmt() {
+        public String getNetAmt() {
             return netAmt;
         }
 
-        public void setNetAmt(Integer netAmt) {
+        public void setNetAmt(String netAmt) {
             this.netAmt = netAmt;
         }
 

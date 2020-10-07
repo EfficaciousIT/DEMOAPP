@@ -58,13 +58,22 @@
                     android:id="@+id/nav_Result"
                     android:icon="@mipmap/result"
                     android:title="Result" />
-                <item
-                    android:id="@+id/nav_payment"
-                    android:icon="@mipmap/payment1"
-                    android:title="Payment" />
+<!--                <item-->
+<!--                    android:id="@+id/nav_payment"-->
+<!--                    android:icon="@mipmap/payment1"-->
+<!--                    android:title="Payment" />-->
             </menu>
         </item>
-
+        <item android:title="Payment">
+            <menu>
+                <item android:icon="@mipmap/payment1"
+                    android:id="@+id/nav_payment"
+                    android:title="Online Payment"/>
+                <item android:icon="@mipmap/payment1"
+                    android:id="@+id/nav_payment_detail"
+                    android:title="Payment Details"/>
+            </menu>
+        </item>
         <item android:title="Online Class">
             <menu>
                 <item
